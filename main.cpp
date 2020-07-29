@@ -4,15 +4,18 @@
 
 using namespace std;
 
+
 //二叉树节点
 typedef struct node {
     char data;
     struct node *lchild, *rchild;
 } BiTNode, *BiTree;
 
-typedef enum Tag {
+
+typedef enum tag {
     Link, Thread
-};//指针，线索
+} Tag;//指针，线索
+
 //二叉线索树
 typedef struct thr_node {
     char data;
@@ -21,6 +24,7 @@ typedef struct thr_node {
     struct thr_node *left;
     struct thr_node *right;
 } BiThrNode, *BiThrTree;
+
 
 //NLR创建二叉树
 void createBT(BiTree &root) {
@@ -39,10 +43,12 @@ void createBT(BiTree &root) {
     }
 }
 
+
 //NLR创建二叉树,以默认值初始化
 char pre[] = {'H', 'D', 'A', ' ', ' ', 'C', ' ', 'B', ' ', ' ', 'G', 'F', ' ', 'E', ' ', ' ', ' '};//先序遍历序列
-int current = 0;
+int current = 0;//当前数组访问位置
 
+//初始化二叉树
 void initBT(BiTree &root) {
 
     if (pre[current++] == ' ') {
@@ -59,7 +65,7 @@ void initBT(BiTree &root) {
 
 }
 
-
+//初始化线索二叉树
 void initThrBT(BiThrTree &root) {
 
     if (pre[current++] == ' ') {
@@ -69,6 +75,8 @@ void initThrBT(BiThrTree &root) {
             exit(0);
         }
         root->data = pre[current - 1];
+        root->lTag = Link;
+        root->rTag = Link;
 
         initThrBT(root->left);
         initThrBT(root->right);
@@ -77,7 +85,7 @@ void initThrBT(BiThrTree &root) {
 }
 
 
-//递归
+//先序，递归
 void preOrder(BiTree root) {
 
     if (root != NULL) {
@@ -87,7 +95,7 @@ void preOrder(BiTree root) {
     }
 }
 
-//非递归
+//先序，非递归
 void preOrderByStack(BiTree root) {
 
     stack<BiTree> s;
@@ -108,6 +116,8 @@ void preOrderByStack(BiTree root) {
 
 }
 
+
+//中序，递归
 void inOrder(BiTree root) {
 
     if (root != NULL) {
@@ -117,6 +127,7 @@ void inOrder(BiTree root) {
     }
 }
 
+//中序，非递归
 void inOrderByStack(BiTree root) {
 
     stack<BiTree> s;
@@ -141,6 +152,8 @@ void inOrderByStack(BiTree root) {
 
 }
 
+
+//后序，递归
 void pastOrder(BiTree root) {
 
     if (root != NULL) {
@@ -150,14 +163,16 @@ void pastOrder(BiTree root) {
     }
 }
 
+//TODO
+//后序，非递归，略复杂
 void pastOrderByStack(BiTree root) {
 
     stack<BiTree> s;
 
-    //TODO
-
 }
 
+
+//层序
 void levelOrder(BiTree root) {
 
     queue<BiTree> q;
@@ -177,6 +192,8 @@ void levelOrder(BiTree root) {
 
 }
 
+
+//深度
 int depth(BiTree root) {
     int ldepth, rdepth;
 
@@ -189,6 +206,7 @@ int depth(BiTree root) {
     }
 
 }
+
 
 //叶子节点数
 void countLeaf(BiTree root, int &count) {
@@ -280,17 +298,18 @@ void inOrderThread(BiThrTree &thr, BiThrTree root) {
 void inOrderThr(BiThrTree thr) {
     if (thr != NULL) {
 
-        if(thr->lTag==Link){
+        if (thr->lTag == Link) {
             inOrderThr(thr->left);
         }
         cout << "(" << thr->data << ",lTag:" << (thr->lTag == Link ? "Link" : "Thread")
-                << ",rTag:"<< (thr->rTag == Link ? "Link" : "Thread") << ") ";
-        if (thr->rTag==Link){
+             << ",rTag:" << (thr->rTag == Link ? "Link" : "Thread") << ") ";
+        if (thr->rTag == Link) {
             inOrderThr(thr->right);
         }
 
     }
 }
+
 
 int main() {
 
@@ -301,31 +320,34 @@ int main() {
     preOrder(root);
     cout << endl;
     preOrderByStack(root);
-    cout << endl;
+    cout << endl << endl;
     inOrder(root);
     cout << endl;
     inOrderByStack(root);
-    cout << endl;
+    cout << endl << endl;
     pastOrder(root);
-    cout << endl;
+    cout << endl << endl;
     levelOrder(root);
-    cout << endl;
+    cout << endl << endl;
 
-    cout << "树高：" << depth(root) << endl;
+    cout << "树高：" << depth(root) << endl << endl;;
 
     int count = 0;
     countLeaf(root, count);
-    cout << "叶子节点数：" << count << endl;
+    cout << "叶子节点数：" << count << endl << endl;;
 
     stack<char> s;
+    cout << "根节点到叶子的所有路径：" << endl;
     allPath(root, s);
+    cout << endl;
 
-    current = 0;
     BiThrTree thr, inThr;
+    current = 0;
     initThrBT(thr);
     inOrderThread(inThr, thr);
-    cout<<"中序线索化二叉树:"<<endl;
+    cout << "中序线索化二叉树:" << endl;
     inOrderThr(inThr);
+    cout << endl;
 
     return 0;
 }
