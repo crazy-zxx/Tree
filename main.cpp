@@ -92,6 +92,8 @@ void preOrder(BiTree root) {
         cout << root->data << ' ';
         preOrder(root->lchild);
         preOrder(root->rchild);
+    } else{
+        cout<<"# ";
     }
 }
 
@@ -193,7 +195,7 @@ void levelOrder(BiTree root) {
 }
 
 
-//深度
+//********深度******************
 int depth(BiTree root) {
     int ldepth, rdepth;
 
@@ -208,7 +210,7 @@ int depth(BiTree root) {
 }
 
 
-//叶子节点数
+//**************叶子节点数***********************
 void countLeaf(BiTree root, int &count) {
     if (root != NULL) {
         if (root->lchild == NULL && root->rchild == NULL) {
@@ -233,7 +235,7 @@ void printStack(stack<char> s) {
     cout << endl;
 }
 
-//根节点到叶子的所有路径
+//*********根节点到叶子的所有路径************
 void allPath(BiTree root, stack<char> &s) {
 
     if (root != NULL) {
@@ -310,44 +312,117 @@ void inOrderThr(BiThrTree thr) {
     }
 }
 
+//NLR创建二叉树,以默认值初始化
+char pre1[] = {'F', 'C', 'A', ' ', 'B', ' ', ' ', 'E', 'D', ' ', ' ', ' ', 'G', ' ', 'H', ' ', ' '};//先序遍历序列
+int current1 = 0;//当前数组访问位置
+
+//初始化BST
+void initBST(BiTree &root) {
+
+    if (pre1[current1++] == ' ') {
+        root = NULL;
+    } else {
+        if (!(root = (BiTree) malloc(sizeof(BiTNode)))) {
+            exit(0);
+        }
+        root->data = pre1[current1 - 1];
+
+        initBST(root->lchild);
+        initBST(root->rchild);
+    }
+
+}
+
+//***************BST删除指定节点**************
+void deleteBSTNode(BiTree &t, char k) {
+    if (t == NULL) {
+        return;
+    }
+    if (t->data == k) {
+        BiTree q = t, s;
+        if (t->lchild == NULL && t->rchild == NULL) {
+            t = NULL;
+            free(q);
+        } else if (t->lchild == NULL) {
+            t = t->rchild;
+            free(q);
+        } else if (t->rchild == NULL) {
+            t = t->lchild;
+            free(q);
+        } else {
+            s = t->lchild;
+            while (s->rchild != NULL) {
+                q=s;
+                s = s->rchild;
+            }
+            //修改树及分支
+            t->data = s->data;
+            if (q != t) {
+                q->rchild = s->lchild;
+            } else {
+                q->lchild = s->lchild;
+            }
+            free(s);
+            //不要尝试递归删除s，有问题
+        }
+    } else if (t->data > k) {
+        deleteBSTNode(t->lchild, k);
+    } else {
+        deleteBSTNode(t->rchild, k);
+    }
+}
+
 
 int main() {
 
     BiTree root;
-    initBT(root);
+//    createBT(root);
 
-    cout << "前、中、后、层次：" << endl;
+//    initBT(root);
+//
+//    cout << "前、中、后、层次：" << endl;
+//    preOrder(root);
+//    cout << endl;
+//    preOrderByStack(root);
+//    cout << endl << endl;
+//    inOrder(root);
+//    cout << endl;
+//    inOrderByStack(root);
+//    cout << endl << endl;
+//    pastOrder(root);
+//    cout << endl << endl;
+//    levelOrder(root);
+//    cout << endl << endl;
+//
+//    cout << "树高：" << depth(root) << endl << endl;;
+//
+//    int count = 0;
+//    countLeaf(root, count);
+//    cout << "叶子节点数：" << count << endl << endl;;
+//
+//    stack<char> s;
+//    cout << "根节点到叶子的所有路径：" << endl;
+//    allPath(root, s);
+//    cout << endl;
+//
+//    BiThrTree thr, inThr;
+//    current = 0;
+//    initThrBT(thr);
+//    inOrderThread(inThr, thr);
+//    cout << "中序线索化二叉树:" << endl;
+//    inOrderThr(inThr);
+//    cout << endl;
+//
+
+
+    initBST(root);
+    cout << "前：" << endl;
     preOrder(root);
     cout << endl;
-    preOrderByStack(root);
+    char k = 'A';
+    deleteBSTNode(root, k);
+    preOrder(root);
     cout << endl << endl;
-    inOrder(root);
-    cout << endl;
-    inOrderByStack(root);
-    cout << endl << endl;
-    pastOrder(root);
-    cout << endl << endl;
-    levelOrder(root);
-    cout << endl << endl;
-
-    cout << "树高：" << depth(root) << endl << endl;;
-
-    int count = 0;
-    countLeaf(root, count);
-    cout << "叶子节点数：" << count << endl << endl;;
-
-    stack<char> s;
-    cout << "根节点到叶子的所有路径：" << endl;
-    allPath(root, s);
-    cout << endl;
-
-    BiThrTree thr, inThr;
-    current = 0;
-    initThrBT(thr);
-    inOrderThread(inThr, thr);
-    cout << "中序线索化二叉树:" << endl;
-    inOrderThr(inThr);
-    cout << endl;
 
     return 0;
 }
