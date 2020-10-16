@@ -4,7 +4,6 @@
 
 using namespace std;
 
-
 //二叉树节点
 typedef struct node {
     char data;
@@ -92,8 +91,8 @@ void preOrder(BiTree root) {
         cout << root->data << ' ';
         preOrder(root->lchild);
         preOrder(root->rchild);
-    } else{
-        cout<<"# ";
+    } else {
+        cout << "# ";
     }
 }
 
@@ -165,11 +164,34 @@ void pastOrder(BiTree root) {
     }
 }
 
-//TODO
-//后序，非递归，略复杂
+//后序，非递归
 void pastOrderByStack(BiTree root) {
 
     stack<BiTree> s;
+    BiTree p;         //p指向前一个已经访问的结点
+    int flag;
+
+    if (root != NULL) {
+        do {
+            while (root != NULL) {
+                s.push(root);
+                root = root->lchild;
+            }
+            p = NULL;
+            flag = 1;
+            while (!s.empty() && flag) {
+                root = s.top();
+                if (root->rchild == p) {
+                    cout << p->data << " ";
+                    s.pop();
+                    p = root;
+                } else {
+                    root = root->rchild;
+                    flag = 0;
+                }
+            }
+        } while (!s.empty());
+    }
 
 }
 
@@ -352,7 +374,7 @@ void deleteBSTNode(BiTree &t, char k) {
         } else {
             s = t->lchild;
             while (s->rchild != NULL) {
-                q=s;
+                q = s;
                 s = s->rchild;
             }
             //修改树及分支
